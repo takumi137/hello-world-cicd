@@ -1,9 +1,12 @@
-name: "Hello World"
-on: [push]
+name: CI Test Workflow
+
+on:
+  workflow_dispatch:   # ← 手動実行を許可
+  workflow_run:        # ← workflow_jobの前提（別Workflowに依存する場合）
 
 jobs:
-  sample:
-    name: Hello World Job
+  example:
     runs-on: ubuntu-latest
     steps:
-    - run: echo "Hello World"
+      - name: Say Hello
+        run: echo "Hello from GitHub Actions"
