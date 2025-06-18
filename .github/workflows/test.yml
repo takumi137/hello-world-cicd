@@ -1,0 +1,12 @@
+name: CI Test Workflow
+
+on:
+  workflow_dispatch:
+  workflow_run:
+
+jobs:
+  example:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Say Hello
+        run: echo "Hello from GitHub Actions"
