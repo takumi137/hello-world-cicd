@@ -1,11 +1,28 @@
-name: CI Test Workflow
-
 on:
   workflow_dispatch:
 
 jobs:
-  example:
+  setup-runner:
     runs-on: ubuntu-latest
     steps:
-      - name: Say Hello
-        run: echo "Hello from GitHub Actions"
+      - name: Lambda①でEC2起動
+        run: |
+          curl -X POST https://your-api-gateway-url \
+            -H "Content-Type: application/json" \
+            -d '{"label": "ephemeral-runner"}'
+
+  main-job:
+    runs-on: [self-hosted, ephemeral-runner]
+    needs: setup-runner
+    steps:
+      - run: echo "ここに実際の処理を書く"
+
+  cleanup:
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Lambda②でEC2停止
+        run: |
+          curl -X POST https://your-api-gateway-url \
+            -H "Content-Type: application/json" \
+            -d '{"workflow_job": {"runner_name": "ephemeral-runner"}}'
