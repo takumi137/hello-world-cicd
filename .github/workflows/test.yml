@@ -1,28 +1,34 @@
-on:
-  workflow_dispatch:
+name: Dynamic EC2 Runner Workflow
+
+on: workflow_dispatch
 
 jobs:
   setup-runner:
     runs-on: ubuntu-latest
+    outputs:
+      runner_name: ${{ steps.invoke-lambda.outputs.runner_name }}
     steps:
-      - name: Lambda①でEC2起動
+      - name: Invoke Lambda to start EC2 runner
+        id: invoke-lambda
         run: |
-          curl -X POST https://your-api-gateway-url \
-            -H "Content-Type: application/json" \
-            -d '{"label": "ephemeral-runner"}'
+          response=$(curl -s -X POST https://YOUR_API_ID.execute-api.ap-northeast-1.amazonaws.com/runner/start)
+          echo "$response"
+          echo "runner_name=$(echo $response | jq -r .runnerName)" >> $GITHUB_OUTPUT
 
   main-job:
-    runs-on: [self-hosted, ephemeral-runner]
     needs: setup-runner
+    runs-on: [self-hosted, "${{ needs.setup-runner.outputs.runner_name }}"]
     steps:
-      - run: echo "ここに実際の処理を書く"
+      - name: Main task
+        run: echo "Running on ${{ runner.name }}"
 
   cleanup:
     if: always()
+    needs: [setup-runner, main-job]
     runs-on: ubuntu-latest
     steps:
-      - name: Lambda②でEC2停止
+      - name: Invoke Lambda to stop EC2 runner
         run: |
-          curl -X POST https://your-api-gateway-url \
+          curl -X POST https://YOUR_API_ID.execute-api.ap-northeast-1.amazonaws.com/runner/stop \
             -H "Content-Type: application/json" \
-            -d '{"workflow_job": {"runner_name": "ephemeral-runner"}}'
+            -d '{"workflow_job": { "runner_name": "${{ needs.setup-runner.outputs.runner_name }}" }}'
