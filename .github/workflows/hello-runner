@@ -1,0 +1,20 @@
+name: Hello Runner Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-runner:
+    runs-on: self-hosted
+    steps:
+      - name: ランナー接続確認
+        run: echo " セルフホステッドランナーでジョブが実行されました！"
+
+      - name: 簡単なコマンド
+        run: |
+          uname -a
+          whoami
+          df -h
+
+      - name: ラベル確認
+        run: echo "Labels: $RUNNER_OS $RUNNER_ARCH $RUNNER_NAME"
