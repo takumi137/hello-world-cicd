@@ -11,7 +11,7 @@ jobs:
       - name: Invoke Lambda to start EC2 runner
         id: invoke-lambda
         run: |
-          response=$(curl -s -X POST https://YOUR_API_ID.execute-api.ap-northeast-1.amazonaws.com/runner/start)
+          response=$(curl -s -X POST https://mjpltpz29l.execute-api.ap-northeast-1.amazonaws.com/runner/start)
           echo "$response"
           echo "runner_name=$(echo $response | jq -r .runnerName)" >> $GITHUB_OUTPUT
 
@@ -29,6 +29,6 @@ jobs:
     steps:
       - name: Invoke Lambda to stop EC2 runner
         run: |
-          curl -X POST https://YOUR_API_ID.execute-api.ap-northeast-1.amazonaws.com/runner/stop \
+          curl -X POST https://mjpltpz29l.execute-api.ap-northeast-1.amazonaws.com/runner/stop \
             -H "Content-Type: application/json" \
             -d '{"workflow_job": { "runner_name": "${{ needs.setup-runner.outputs.runner_name }}" }}'
