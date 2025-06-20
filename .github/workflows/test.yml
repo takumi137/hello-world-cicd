@@ -31,4 +31,4 @@ jobs:
         run: |
           curl -X POST https://mjpltpz29l.execute-api.ap-northeast-1.amazonaws.com/runner/stop \
             -H "Content-Type: application/json" \
-            -d '{"workflow_job": { "runner_name": ${{ needs.setup-runner.outputs.runner_name }} }}'
+            -d "{\"workflow_job\": { \"runner_name\": \"${{ needs.setup-runner.outputs.runner_name }}\" }}"
