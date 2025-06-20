@@ -17,7 +17,7 @@ jobs:
 
   main-job:
     needs: setup-runner
-    runs-on: [self-hosted, ${{ needs.setup-runner.outputs.runner_name }}]
+    runs-on: ["self-hosted", "${{ needs.setup-runner.outputs.runner_name }}"]
     steps:
       - name: Main task
         run: echo "Running on ${{ runner.name }}"
