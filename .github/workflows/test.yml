@@ -17,7 +17,7 @@ jobs:
 
   main-job:
     needs: setup-runner
-    runs-on: [self-hosted, "${{ needs.setup-runner.outputs.runner_name }}"]
+    runs-on: [self-hosted, ${{ needs.setup-runner.outputs.runner_name }}]
     steps:
       - name: Main task
         run: echo "Running on ${{ runner.name }}"
@@ -31,4 +31,4 @@ jobs:
         run: |
           curl -X POST https://mjpltpz29l.execute-api.ap-northeast-1.amazonaws.com/runner/stop \
             -H "Content-Type: application/json" \
-            -d '{"workflow_job": { "runner_name": "${{ needs.setup-runner.outputs.runner_name }}" }}'
+            -d '{"workflow_job": { "runner_name": ${{ needs.setup-runner.outputs.runner_name }} }}'
